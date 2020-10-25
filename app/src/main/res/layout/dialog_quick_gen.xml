@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:background="@drawable/bg_round"
+        android:backgroundTint="@color/colorBgLight">
+
+        <TextView
+            android:id="@+id/quick_account_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Account No"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/quick_no_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:hint="No. (Required)"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="@id/quick_account_no"
+            app:layout_constraintStart_toStartOf="@id/quick_account_no"
+            app:layout_constraintTop_toBottomOf="@id/quick_account_no" />
+
+        <TextView
+            android:id="@+id/quick_account_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Amount"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#000"
+            app:layout_constraintEnd_toEndOf="@+id/quick_account_no"
+            app:layout_constraintStart_toStartOf="@+id/quick_account_no"
+            app:layout_constraintTop_toBottomOf="@id/quick_no_edit" />
+
+        <EditText
+            android:id="@+id/quick_amount_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:hint="Amount. (Optional)"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="@id/quick_account_no"
+            app:layout_constraintStart_toStartOf="@id/quick_account_no"
+            app:layout_constraintTop_toBottomOf="@id/quick_account_amount" />
+
+        <TextView
+            android:id="@+id/quick_desc_no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#000"
+            app:layout_constraintEnd_toEndOf="@id/quick_account_no"
+            app:layout_constraintStart_toStartOf="@id/quick_account_no"
+            app:layout_constraintTop_toBottomOf="@id/quick_amount_edit" />
+
+        <EditText
+            android:id="@+id/quick_desc_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:gravity="top|left"
+            android:hint="Message (Optional)"
+            android:inputType="numberDecimal"
+            android:maxLines="3"
+            android:minHeight="100dp"
+            app:layout_constraintEnd_toEndOf="@+id/quick_account_no"
+            app:layout_constraintStart_toStartOf="@+id/quick_account_no"
+            app:layout_constraintTop_toBottomOf="@id/quick_desc_no" />
+
+        <Button
+            android:id="@+id/quick_btn_gen"
+            style="@style/AppTheme.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:text="Generate"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/quick_desc_edit"
+            app:layout_constraintTop_toBottomOf="@+id/quick_desc_edit" />
+
+        <Button
+            android:id="@+id/quick_btn_cancel"
+            style="@style/AppTheme.Button.Light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Cancel"
+            app:layout_constraintBottom_toBottomOf="@id/quick_btn_gen"
+            app:layout_constraintEnd_toStartOf="@id/quick_btn_gen"
+            app:layout_constraintTop_toTopOf="@id/quick_btn_gen" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

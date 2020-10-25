@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">PromptPay QR</string>
+    <string name="app_info">This application created for generate a promptpay qr code for everyone used for pay something or any transaction with support promptpay qr</string>
+</resources>
