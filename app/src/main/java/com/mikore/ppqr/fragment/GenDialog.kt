@@ -59,6 +59,7 @@ class GenDialog : DialogFragment() {
         genBtn.setOnClickListener {
             val no = accountNo.text.toString()
             val am = amount.text.toString()
+            var ds = desc.text.toString()
             if (no.isEmpty() || no.length < 10 || no.length > 15) {
                 Toast.makeText(
                     requireContext(),
@@ -67,7 +68,7 @@ class GenDialog : DialogFragment() {
                 ).show()
             } else {
                 QRPopup(
-                    AppHistory("", "", "Quick Generate", am.ifEmpty { null }),
+                    AppHistory("", "", ds.ifEmpty { "Quick Generate" }, am.ifEmpty { null }),
                     AppAccount("", null, no, AccountType.fromLength(no.length))
                 ).show(requireActivity().supportFragmentManager, "quick_gen")
             }
