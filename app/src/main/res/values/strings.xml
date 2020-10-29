@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">PromptPay QR</string>
     <string name="app_info">This application created for generate a promptpay qr code for everyone used for pay something or any transaction with support promptpay qr</string>
+    <string name="main_ad_view">ca-app-pub-8856932379572632/8208087539</string>
+    <string name="resutl_popup_unit">ca-app-pub-8856932379572632/3346960320</string>
 </resources>

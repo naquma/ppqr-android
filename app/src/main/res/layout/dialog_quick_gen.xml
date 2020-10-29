@@ -80,7 +80,7 @@
             android:backgroundTint="@color/colorAccent"
             android:gravity="top|left"
             android:hint="Message (Optional)"
-            android:inputType="numberDecimal"
+            android:inputType="text"
             android:maxLines="3"
             android:minHeight="100dp"
             app:layout_constraintEnd_toEndOf="@+id/quick_account_no"

@@ -21,7 +21,7 @@ import com.mikore.ppqr.activity.ResultActivity
 import com.mikore.ppqr.database.AppAccount
 import com.mikore.ppqr.fragment.AccountFragment
 import com.mikore.ppqr.fragment.AddDialog
-import com.mikore.ppqr.utility.Utills
+import com.mikore.ppqr.utility.Utils
 import javax.inject.Inject
 
 class AccountAdapter @Inject constructor(
@@ -76,7 +76,7 @@ class AccountAdapter @Inject constructor(
                     ConstraintSet.BOTTOM,
                     ConstraintSet.PARENT_ID,
                     ConstraintSet.BOTTOM,
-                    Utills.dpToPx(10, context.resources)
+                    Utils.dpToPx(10, context.resources)
                 )
             } else {
                 c.setVisibility(holder.customAmount.id, View.VISIBLE)
@@ -129,6 +129,7 @@ class AccountAdapter @Inject constructor(
                 holder.descField.text.toString().ifEmpty { null })
             val itn = Intent(context.applicationContext, ResultActivity::class.java)
             itn.putExtras(args)
+            itn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(itn)
         }
     }

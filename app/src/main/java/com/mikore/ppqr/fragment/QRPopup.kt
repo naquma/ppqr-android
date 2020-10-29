@@ -54,17 +54,20 @@ class QRPopup(
         desc = view.findViewById(R.id.textView13)
         img = view.findViewById(R.id.imageView7)
 
-        name.text = if (account.name.isNullOrEmpty()) {
+        val nameText = if (account.name.isNullOrEmpty()) {
             account.no
         } else {
             "${account.name} (${account.no})"
         }
-        amount.text = "Amount: " + if (history.amount.isNullOrEmpty()) {
+        name.text = nameText
+        val amountText = "Amount: " + if (history.amount.isNullOrEmpty()) {
             "Not specified"
         } else {
-            "$amount Baht."
+            "${history.amount} Baht."
         }
-        desc.text = "Note: " + history.description.ifNullOrEmpty { "Not specified" }
+        amount.text = amountText
+        val descText = "Note: " + history.description.ifNullOrEmpty { "Not specified" }
+        desc.text = descText
 
         val util = PromptPayUtil()
         val qr = QRGEncoder(

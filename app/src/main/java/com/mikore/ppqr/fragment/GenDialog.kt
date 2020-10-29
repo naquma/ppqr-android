@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 
 import com.mikore.ppqr.R
@@ -58,10 +59,18 @@ class GenDialog : DialogFragment() {
         genBtn.setOnClickListener {
             val no = accountNo.text.toString()
             val am = amount.text.toString()
-            QRPopup(
-                AppHistory("", "", "Quick Generate", am.ifEmpty { null }),
-                AppAccount("", null, no, AccountType.fromLength(no.length))
-            ).show(requireActivity().supportFragmentManager, "quick_gen")
+            if (no.isEmpty() || no.length < 10 || no.length > 15) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter valid account no.",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                QRPopup(
+                    AppHistory("", "", "Quick Generate", am.ifEmpty { null }),
+                    AppAccount("", null, no, AccountType.fromLength(no.length))
+                ).show(requireActivity().supportFragmentManager, "quick_gen")
+            }
         }
 
     }

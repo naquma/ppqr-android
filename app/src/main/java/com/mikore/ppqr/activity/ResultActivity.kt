@@ -30,6 +30,7 @@ import com.mikore.ppqr.database.AppHistory
 import com.mikore.ppqr.database.AppRepo
 import com.mikore.ppqr.fragment.HistoryFragment
 import com.mikore.ppqr.utility.PromptPayUtil
+import com.mikore.ppqr.utility.Utils
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.result_layout.*
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +57,8 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
     @Inject
     lateinit var appRepo: AppRepo
 
+    private lateinit var mInterstitialAd: InterstitialAd
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -79,12 +82,14 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         qrView.layoutParams = params
 
 
-        amountView.text = "Amount: " + if (amount == null) {
+        val amountText = "Amount: " + if (amount == null) {
             "Not specified"
         } else {
             "$amount Baht."
         }
-        descView.text = "Note: " + (desc ?: "Not specified")
+        amountView.text = amountText
+        val descText = "Note: " + (desc ?: "Not specified")
+        descView.text = descText
 
         MainScope().launch {
             val account = withContext(Dispatchers.IO) {
@@ -208,8 +213,8 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
     private fun exportToBitmap(v: View): Bitmap {
         val rootView = window.decorView.rootView
         val bmp = Bitmap.createBitmap(
-            screenSize().widthPixels,
-            screenSize().heightPixels,
+            Utils.screenWidth(windowManager),
+            Utils.screenHeight(windowManager),
             Bitmap.Config.ARGB_8888
         )
             .applyCanvas {
@@ -232,19 +237,14 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
     private fun toPx(dp: Int): Int =
         (dp * (resources.displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 
-    private fun screenSize(): DisplayMetrics {
-        val metrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(metrics)
-        return metrics
-    }
 
     private fun getSize(): Int {
-        val metrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(metrics)
-        return if (metrics.widthPixels < metrics.heightPixels) {
-            (metrics.widthPixels * 0.7).roundToInt()
+        val width = Utils.screenWidth(windowManager)
+        val height = Utils.screenHeight(windowManager)
+        return if (width < height) {
+            (width * 0.7).roundToInt()
         } else {
-            (metrics.heightPixels * 0.7).roundToInt()
+            (height * 0.7).roundToInt()
         }
     }
 }

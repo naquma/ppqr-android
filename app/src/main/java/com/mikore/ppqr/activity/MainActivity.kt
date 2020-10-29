@@ -15,6 +15,7 @@ import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.main_layout.*
 import javax.inject.Inject
 
+
 class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
     @Inject
@@ -31,8 +32,6 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
             tab.text = if (position == 0) "Account" else "History"
         }.attach()
 
-        AppDialog(R.layout.ads_dialog).show(supportFragmentManager, "ads")
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.abount_menu) {
-            AppDialog(R.layout.about_dialog).show(supportFragmentManager, "about")
+            AppDialog().show(supportFragmentManager, "about")
             return true
         }
         return super.onOptionsItemSelected(item)
