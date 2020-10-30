@@ -57,8 +57,6 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
     @Inject
     lateinit var appRepo: AppRepo
 
-    private lateinit var mInterstitialAd: InterstitialAd
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
