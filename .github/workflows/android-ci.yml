@@ -34,7 +34,7 @@ jobs:
     - name: Assemble debug
       run: ./gradlew assembleDebug
     - name: Upload artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: app
         path: app/build/outputs
