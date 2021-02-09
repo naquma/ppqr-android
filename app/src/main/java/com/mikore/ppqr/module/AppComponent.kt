@@ -22,6 +22,6 @@ interface AppComponent {
 @Module
 class AppModule {
     @Provides
-    @Singleton
+    @Reusable
     fun provideAppRepo(app: Application): AppRepo = AppRepo(app)
 }

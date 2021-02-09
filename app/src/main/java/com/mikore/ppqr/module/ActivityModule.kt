@@ -10,7 +10,6 @@ import com.mikore.ppqr.fragment.AccountFragment
 import com.mikore.ppqr.fragment.HistoryFragment
 import dagger.Module
 import dagger.Provides
-import dagger.Singleton
 import dagger.android.ContributesAndroidInjector
 
 @Module
@@ -27,7 +26,6 @@ abstract class ActivityModule {
 @Module
 class MainActivityModule {
     @Provides
-    @Singleton
     @ActivityScope
     fun provideFragmentActivity(mainActivity: MainActivity): FragmentActivity = mainActivity
 }
@@ -46,7 +44,6 @@ abstract class MainActivityFragmentModule {
 @Module
 class AccountFragmentModule {
     @Provides
-    @Singleton
     @FragmentScope
     fun provideAccountAdapter(fragmentActivity: FragmentActivity) =
         AccountAdapter(fragmentActivity, fragmentActivity.supportFragmentManager)
@@ -55,7 +52,6 @@ class AccountFragmentModule {
 @Module
 class HistoryFragmentModule {
     @Provides
-    @Singleton
     @FragmentScope
     fun provideHistoryAdapter(fragmentActivity: FragmentActivity, appRepo: AppRepo) =
         HistoryAdapter(fragmentActivity, fragmentActivity.supportFragmentManager, appRepo)
