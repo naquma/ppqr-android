@@ -23,9 +23,5 @@ interface AppComponent {
 class AppModule {
     @Provides
     @Reusable
-    fun provideContext(app: Application): Context = app
-
-    @Provides
-    @Reusable
-    fun provideAppRepo(context: Context): AppRepo = AppRepo(context)
+    fun provideAppRepo(app: Application): AppRepo = AppRepo(app)
 }

@@ -3,8 +3,9 @@ package com.mikore.ppqr.database
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class AppRepo(context: Context) {
+class AppRepo @Inject constructor(private val context: Context) {
     private val appDatabase = AppDatabase.getInstance(context)
     private val accountDao = appDatabase.accountDao()
     private val historyDao = appDatabase.historyDao()

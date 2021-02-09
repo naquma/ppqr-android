@@ -70,14 +70,26 @@ class HistoryAdapter @Inject constructor(
         }
         holder.historyDesc.text = history.description ?: "No description"
         holder.historyDate.text = dateFormat.format(history.time)
-        if (!history.amount.isNullOrEmpty()) {
+        val haveAmount = !history.amount.isNullOrEmpty();
+        if (haveAmount) {
             holder.historyAmount.text = "${history.amount} Baht"
-            ConstraintSet().apply {
-                clone(holder.root)
-                setVisibility(holder.historyAmount.id, View.VISIBLE)
-                clear(holder.historyDate.id, ConstraintSet.BOTTOM)
-            }.applyTo(holder.root)
         }
+        ConstraintSet().apply {
+            clone(holder.root)
+            if (haveAmount) {
+                setVisibility(holder.historyAmount.id, if (haveAmount) View.VISIBLE else View.GONE)
+                clear(holder.historyDate.id, ConstraintSet.BOTTOM)
+            } else {
+                setVisibility(holder.historyAmount.id, if (haveAmount) View.VISIBLE else View.GONE)
+                connect(
+                    holder.historyDate.id, 
+                    ConstraintSet.BOTTOM, 
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM,
+                    30
+                )
+            }
+        }.applyTo(holder.root)
 
         holder.historyBin.setOnClickListener {
             AlertDialog.Builder(context)
