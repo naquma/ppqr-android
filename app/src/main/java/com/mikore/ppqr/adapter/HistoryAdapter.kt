@@ -76,8 +76,19 @@ class HistoryAdapter @Inject constructor(
         }
         ConstraintSet().apply {
             clone(holder.root)
-            setVisibility(holder.historyAmount.id, if (haveAmount) View.VISIBLE else View.GONE)
-            clear(holder.historyDate.id, ConstraintSet.BOTTOM)
+            if (haveAmount) {
+                setVisibility(holder.historyAmount.id, if (haveAmount) View.VISIBLE else View.GONE)
+                clear(holder.historyDate.id, ConstraintSet.BOTTOM)
+            } else {
+                setVisibility(holder.historyAmount.id, if (haveAmount) View.VISIBLE else View.GONE)
+                connect(
+                    holder.historyDate.id, 
+                    ConstraintSet.BOTTOM, 
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM,
+                    30
+                )
+            }
         }.applyTo(holder.root)
 
         holder.historyBin.setOnClickListener {
