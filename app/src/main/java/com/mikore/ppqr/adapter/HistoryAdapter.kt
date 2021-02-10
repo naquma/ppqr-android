@@ -101,7 +101,7 @@ class HistoryAdapter @Inject constructor(
             holder.bindFrameClick(history, account, fragmentManager)
             var title: String = account.no
             if (!account.name.isNullOrEmpty()) {
-                title += " ({$account.name})"
+                title += " (${account.name})"
             }
             val desc = history.description ?: "No description"
             val date = dateFormat.format(history.time)
