@@ -28,13 +28,13 @@ import kotlin.collections.ArrayList
 class HistoryAdapter @Inject constructor(
     private val fragmentManager: FragmentManager,
     private val appRepo: AppRepo
-) : RecyclerView.Adapter<HistoryViewHolder>() {
+) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private val histories: ArrayList<AppHistory> = ArrayList()
 
     private val dateFormat = SimpleDateFormat("MMM d, yyyy HH:mm", Locale.ENGLISH)
 
-    class HistoryViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
+    class ViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
         private val historyFrame: FrameLayout = item.findViewById(R.id.history_frame_bg)
         private val historyTitle: TextView = item.findViewById(R.id.history_title)
         private val historyDesc: TextView = item.findViewById(R.id.history_desc)
@@ -79,19 +79,19 @@ class HistoryAdapter @Inject constructor(
         }
 
         companion object {
-            fun create(parent: ViewGroup): HistoryViewHolder {
+            fun create(parent: ViewGroup): HistoryAdapter.ViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
                     .inflate(R.layout.history_item, parent, false)
-                return HistoryViewHolder(view)
+                return HistoryAdapter.ViewHolder(view)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
-        return HistoryViewHolder.create(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryAdapter.ViewHolder {
+        return HistoryAdapter.ViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder, position: Int) {
         val history = histories[position]
         var title: String = ""
         MainScope().launch {
