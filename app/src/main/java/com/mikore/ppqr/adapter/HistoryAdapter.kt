@@ -91,7 +91,7 @@ class HistoryAdapter @Inject constructor(
         return HistoryViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val history = histories[position]
         var title: String = ""
         MainScope().launch {
