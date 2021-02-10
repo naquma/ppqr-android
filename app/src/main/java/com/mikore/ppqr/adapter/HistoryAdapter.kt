@@ -9,11 +9,10 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mikore.ppqr.R
+import com.mikore.ppqr.database.AppAccount
 import com.mikore.ppqr.database.AppHistory
 import com.mikore.ppqr.database.AppRepo
 import com.mikore.ppqr.fragment.HistoryFragment
@@ -28,8 +27,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class HistoryAdapter @Inject constructor(
-    private val context: Context,
-    private val supportFragmentManager: FragmentManager,
+    private val fragmentManager: FragmentManager,
     private val appRepo: AppRepo
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
@@ -37,62 +35,30 @@ class HistoryAdapter @Inject constructor(
 
     private val dateFormat = SimpleDateFormat("MMM d, yyyy HH:mm", Locale.ENGLISH)
 
-    class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val root: ConstraintLayout = item as ConstraintLayout
-        val frame: FrameLayout = item.findViewById(R.id.history_frame_bg)
-        val historyTitle: TextView = item.findViewById(R.id.history_title)
-        val historyDesc: TextView = item.findViewById(R.id.history_desc)
-        val historyDate: TextView = item.findViewById(R.id.history_date)
-        val historyAmount: TextView = item.findViewById(R.id.history_amount)
-        val historyBin: ImageButton = item.findViewById(R.id.history_bin)
-    }
+    class ViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
+        private val historyFrame: FrameLayout = item.findViewById(R.id.history_frame_bg)
+        private val historyTitle: TextView = item.findViewById(R.id.history_title)
+        private val historyDesc: TextView = item.findViewById(R.id.history_desc)
+        private val historyDate: TextView = item.findViewById(R.id.history_date)
+        private val historyAmount: TextView = item.findViewById(R.id.history_amount)
+        private val historyBin: ImageButton = item.findViewById(R.id.history_bin)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.history_item, parent, false)
-        )
-    }
+        fun bind(title: String?, desc: String, date: String, amount: String?) {
+            historyTitle.text = title
+            historyDesc.text = desc
+            historyDate.text = date
+            historyAmount.text = amount
+        }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val history = histories[position]
-        MainScope().launch {
-            val account = withContext(Dispatchers.IO) {
-                appRepo.getAccount(history.accountId)
-            }
-            holder.historyTitle.text = if (account.name.isNullOrEmpty()) {
-                account.no
-            } else {
-                "${account.no} (${account.name})"
-            }
-            holder.frame.setOnClickListener {
-                QRPopup(history, account).show(supportFragmentManager, "dialog_qr")
+        fun bindFrameClick(history: AppHistory, account: AppAccount, manager: FragmentManager) {
+            historyFrame.setOnClickListener {
+                QRPopup(history, account).show(manager, "dialog_qr")
             }
         }
-        holder.historyDesc.text = history.description ?: "No description"
-        holder.historyDate.text = dateFormat.format(history.time)
-        val haveAmount = !history.amount.isNullOrEmpty();
-        if (haveAmount) {
-            holder.historyAmount.text = "${history.amount} Baht"
-        }
-        ConstraintSet().apply {
-            clone(holder.root)
-            if (haveAmount) {
-                setVisibility(holder.historyAmount.id, if (haveAmount) View.VISIBLE else View.GONE)
-                clear(holder.historyDate.id, ConstraintSet.BOTTOM)
-            } else {
-                setVisibility(holder.historyAmount.id, if (haveAmount) View.VISIBLE else View.GONE)
-                connect(
-                    holder.historyDate.id, 
-                    ConstraintSet.BOTTOM, 
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.BOTTOM,
-                    30
-                )
-            }
-        }.applyTo(holder.root)
 
-        holder.historyBin.setOnClickListener {
-            AlertDialog.Builder(context)
+        fun bindRemoveClick(history: AppHistory, appRepo: AppRepo) {
+            historyBin.setOnClickListener {
+                AlertDialog.Builder(item.context)
                 .setTitle("Delete")
                 .setMessage("Confirm to delete?")
                 .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -101,11 +67,52 @@ class HistoryAdapter @Inject constructor(
                     }
                     Intent().also {
                         it.action = HistoryFragment.REFRESH_FILTER
-                        context.sendBroadcast(it)
+                        item.context.sendBroadcast(it)
                     }
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
+            }
+        }
+
+        fun showAmount(show: Boolean) {
+            historyAmount.visibility = if (show) View.VISIBLE else View.GONE
+        }
+
+        companion object {
+            fun create(parent: ViewGroup): HistoryAdapter.ViewHolder {
+                val view: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.history_item, parent, false)
+                return HistoryAdapter.ViewHolder(view)
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryAdapter.ViewHolder {
+        return HistoryAdapter.ViewHolder.create(parent)
+    }
+
+    override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder, position: Int) {
+        val history = histories[position]
+        MainScope().launch {
+            val account = withContext(Dispatchers.IO) {
+                appRepo.getAccount(history.accountId)
+            }
+            holder.bindFrameClick(history, account, fragmentManager)
+            var title: String = account.no
+            if (!account.name.isNullOrEmpty()) {
+                title += " (${account.name})"
+            }
+            val desc = history.description ?: "No description"
+            val date = dateFormat.format(history.time)
+            var amount: String? = null
+            val haveAmount = !history.amount.isNullOrEmpty()
+            if (haveAmount) {
+                amount = "${history.amount} Baht"
+            }
+            holder.bind(title, desc, date, amount)
+            holder.showAmount(haveAmount)
+            holder.bindRemoveClick(history, appRepo)
         }
     }
 

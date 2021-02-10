@@ -21,50 +21,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/history_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="16dp"
-        android:text="History Title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#000"
-        android:textStyle="bold"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" >
 
-    <TextView
-        android:id="@+id/history_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Description"
-        app:layout_constraintStart_toStartOf="@+id/history_title"
-        app:layout_constraintTop_toBottomOf="@+id/history_title" />
+        <TextView
+            android:id="@+id/history_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="History Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#000"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/history_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="Jun 9, 2020 19:12"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/history_title"
-        app:layout_constraintTop_toBottomOf="@+id/history_desc" />
+        <TextView
+            android:id="@+id/history_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description" />
 
-    <TextView
-        android:id="@+id/history_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="120 Baht"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/history_date"
-        app:layout_constraintTop_toBottomOf="@+id/history_date" />
+        <TextView
+            android:id="@+id/history_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jun 9, 2020 19:12" />
+
+        <TextView
+            android:id="@+id/history_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="120 Baht"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/history_bin"
@@ -73,9 +68,9 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/circle_btn"
         android:tint="#ed0000"
-        app:layout_constraintBottom_toBottomOf="@+id/history_frame_bg"
-        app:layout_constraintEnd_toEndOf="@+id/history_frame_bg"
-        app:layout_constraintTop_toTopOf="@+id/history_frame_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_recycle_bin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
