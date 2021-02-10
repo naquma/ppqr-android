@@ -39,8 +39,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.applyCanvas
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.mikore.ppqr.AppConst
+import com.mikore.ppqr.App.Companion.appScope
 import com.mikore.ppqr.BuildConfig
+import com.mikore.ppqr.Contracts
 import com.mikore.ppqr.R
 import com.mikore.ppqr.database.AppHistory
 import com.mikore.ppqr.database.AppRepo
@@ -48,13 +49,13 @@ import com.mikore.ppqr.fragment.HistoryFragment
 import com.mikore.ppqr.utility.PromptPayUtil
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+
 
 class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -82,31 +83,24 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         val toolbar = findViewById<Toolbar>(R.id.result_toolbar)
         setSupportActionBar(toolbar)
 
-        val saveHistory = intent.getBooleanExtra(AppConst.ARGS_SAVE_HISTORY_KEY, false)
-        val uid = intent.getStringExtra(AppConst.ARGS_ACCOUNT_ID_KEY)
-        val amount = intent.getStringExtra(AppConst.ARGS_AMOUNT_KEY)
-        val desc = intent.getStringExtra(AppConst.ARGS_DESCRIPTION_KEY)
-
-        if (uid == null) {
-            finish()
-            return
-        }
+        val uid = intent.getStringExtra(Contracts.KEY_ACCOUNT_ID)
+        val saveHistory = intent.getBooleanExtra(Contracts.KEY_SAVE_HISTORY, false)
+        val haveAmount = intent.getBooleanExtra(Contracts.KEY_HAVE_AMOUNT, false)
+        val amount = if (haveAmount) intent.getStringExtra(Contracts.KEY_AMOUNT) else null
+        val haveDesc = intent.getBooleanExtra(Contracts.KEY_HAVE_DESCRIPTION, false)
+        val desc = if (haveDesc) intent.getStringExtra(Contracts.KEY_DESCRIPTION) else null
 
         val params = qrView.layoutParams as ConstraintLayout.LayoutParams
-        params.width = 300
-        params.height = 300
+        params.width = size(300.0 / 400.0)
+        params.height = size(300.0 / 400.0)
         qrView.layoutParams = params
 
-        amountText = "Amount: " + if (amount == null) {
-            "Not specified"
-        } else {
-            "$amount Baht."
-        }
+        amountText = "Amount: " + if (haveAmount) "$amount Baht." else "Not specified"
         amountView.text = amountText
-        descText = "Note: " + (desc ?: "Not specified")
+        descText = "Note: " + if (haveDesc) desc else "Not specified"
         descView.text = descText
 
-        MainScope().launch {
+        appScope.launch(Dispatchers.Main) {
             val account = withContext(Dispatchers.IO) {
                 appRepo.getAccount(uid)
             }
@@ -116,7 +110,7 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
             }
             nameView.text = titleText
             val data = promptPay.generateQRData(account.no, amount)
-            val qrg = QRGEncoder(data, null, QRGContents.Type.TEXT, 300)
+            val qrg = QRGEncoder(data, null, QRGContents.Type.TEXT, size())
             qrBitmap = qrg.bitmap
             qrView.setImageBitmap(qrBitmap)
             if (saveHistory) {
@@ -137,13 +131,13 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         when (item.itemId) {
             R.id.rs_close -> finish()
             R.id.rs_save -> {
-                storeImage(false)
+                storeImage()
                 showToast("Saved successfully.", Toast.LENGTH_SHORT)
             }
             R.id.rs_share -> {
                 val it = Intent(Intent.ACTION_SEND).apply {
                     type = "image/jpeg"
-                    putExtra(Intent.EXTRA_STREAM, storeImage(true))
+                    putExtra(Intent.EXTRA_STREAM, storeImage())
                 }
                 startActivity(Intent.createChooser(it, "Share Image"))
             }
@@ -153,7 +147,7 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -177,14 +171,10 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         return super.onOptionsItemSelected(item)
     }
 
-    private fun storeImage(isShare: Boolean): Uri? {
+    private fun storeImage(): Uri? {
         try {
             val image = exportToBitmap()
-            val dist = if (isShare) {
-                File(Environment.DIRECTORY_PICTURES, getString(R.string.app_name))
-            } else {
-                getExternalFilesDir("images_share")
-            }
+            val dist = File(Environment.DIRECTORY_PICTURES, getString(R.string.app_name))
             val date = System.currentTimeMillis()
             val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.ENGLISH)
                 .format(date) + getString(R.string.app_name).replace(" ", "-")
@@ -227,22 +217,52 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
     }
 
     private fun exportToBitmap(): Bitmap {
-        val baseBitmap = BitmapFactory.decodeResource(resources, R.drawable.optimize)
-        baseBitmap.applyCanvas {
-            drawBitmap(qrBitmap, 50f, 50f, null)
+        var baseBitmap = BitmapFactory.decodeResource(resources, R.drawable.optimize)
+        baseBitmap = baseBitmap.copy(Bitmap.Config.ARGB_8888, true).applyCanvas {
+            val heightSize = size(width, 15.0 / 400.0)
+            val scaleSize = size(width, 0.75).toInt()
+            drawBitmap(
+                Bitmap.createScaledBitmap(qrBitmap, scaleSize, scaleSize, false),
+                heightSize + size(width, 35.0 / 400.0),
+                heightSize + size(width, 35.0 / 400.0),
+                null
+            )
             val paint = Paint().apply {
                 color = Color.BLACK
                 style = Paint.Style.FILL
-                textSize = 18f
+                textSize = 42f
                 textAlign = Paint.Align.CENTER
             }
-            drawText(titleText, baseBitmap.width / 2f, 360f, paint)
-            paint.textSize = 14f
-            paint.color = 0x323232
-            drawText(descText, baseBitmap.width / 2f, 375f, paint)
-            drawText(amountText, baseBitmap.width / 2f, 390f, paint)
+            drawText(
+                titleText,
+                width / 2f,
+                qrBitmap.height + heightSize,
+                paint
+            )
+            paint.textSize = 35f
+            paint.color = Color.GRAY
+            drawText(
+                descText,
+                width / 2f,
+                qrBitmap.height + heightSize + size(width, 30.0 / 400.0),
+                paint
+            )
+            drawText(
+                amountText,
+                width / 2f,
+                qrBitmap.height + heightSize + size(width, 60.0 / 400.0),
+                paint
+            )
         }
         return baseBitmap
     }
 
+    private fun size(percent: Double = 0.925): Int {
+        val width = BitmapFactory.decodeResource(resources, R.drawable.optimize).width
+        return size(width, percent).toInt()
+    }
+
+    private fun size(baseSize: Int, percent: Double): Float {
+        return (baseSize * percent).toFloat()
+    }
 }

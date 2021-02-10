@@ -25,6 +25,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mikore.ppqr.App.Companion.appScope
 import com.mikore.ppqr.R
 import com.mikore.ppqr.database.AppAccount
 import com.mikore.ppqr.database.AppHistory
@@ -32,7 +33,6 @@ import com.mikore.ppqr.database.AppRepo
 import com.mikore.ppqr.fragment.HistoryFragment
 import com.mikore.ppqr.fragment.QRPopup
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -76,7 +76,7 @@ class HistoryAdapter @Inject constructor(
                     .setTitle("Delete")
                     .setMessage("Confirm to delete?")
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        MainScope().launch {
+                        appScope.launch {
                             appRepo.deleteHistory(history)
                         }
                         Intent().also {
@@ -94,21 +94,21 @@ class HistoryAdapter @Inject constructor(
         }
 
         companion object {
-            fun create(parent: ViewGroup): HistoryAdapter.ViewHolder {
+            fun create(parent: ViewGroup): ViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
                     .inflate(R.layout.history_item, parent, false)
-                return HistoryAdapter.ViewHolder(view)
+                return ViewHolder(view)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryAdapter.ViewHolder {
-        return HistoryAdapter.ViewHolder.create(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val history = histories[position]
-        MainScope().launch {
+        appScope.launch(Dispatchers.Main) {
             val account = withContext(Dispatchers.IO) {
                 appRepo.getAccount(history.accountId)
             }

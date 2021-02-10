@@ -11,7 +11,7 @@
         android:xlargeScreens="false" />
 
     <application
-        android:name=".AppApplication"
+        android:name=".App"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"

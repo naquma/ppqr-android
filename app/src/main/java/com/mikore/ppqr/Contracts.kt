@@ -15,11 +15,13 @@
  */
 package com.mikore.ppqr
 
-class AppConst {
+class Contracts {
     companion object {
-        const val ARGS_SAVE_HISTORY_KEY = "save_history"
-        const val ARGS_AMOUNT_KEY = "amount"
-        const val ARGS_ACCOUNT_ID_KEY = "account_id"
-        const val ARGS_DESCRIPTION_KEY = "description"
+        const val KEY_SAVE_HISTORY = "save_history"
+        const val KEY_ACCOUNT_ID = "account_id"
+        const val KEY_AMOUNT = "amount"
+        const val KEY_HAVE_AMOUNT = "have_amount"
+        const val KEY_DESCRIPTION = "description"
+        const val KEY_HAVE_DESCRIPTION = "have_description"
     }
 }

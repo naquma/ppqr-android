@@ -23,4 +23,8 @@ annotation class ActivityScope
 
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
-annotation class FragmentScope
+annotation class AccountScope
+
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class HistoryScope

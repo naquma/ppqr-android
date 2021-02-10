@@ -20,9 +20,15 @@ import com.mikore.ppqr.module.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
-class AppApplication : Application(), HasAndroidInjector {
+class App : Application(), HasAndroidInjector {
+
+    companion object {
+        val appScope = CoroutineScope(SupervisorJob())
+    }
 
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>

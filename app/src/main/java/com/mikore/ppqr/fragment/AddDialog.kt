@@ -24,13 +24,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.mikore.ppqr.App.Companion.appScope
 import com.mikore.ppqr.BuildConfig
 import com.mikore.ppqr.R
 import com.mikore.ppqr.database.AccountType
 import com.mikore.ppqr.database.AppAccount
 import com.mikore.ppqr.database.AppRepo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -91,7 +91,7 @@ class AddDialog(private val account: AppAccount? = null) : DialogFragment() {
             val name = accountName.text.toString()
             if (no.isNotEmpty() && no.length >= 10 && no.length <= 15) {
                 val type = AccountType.fromLength(no.length)
-                MainScope().launch {
+                appScope.launch(Dispatchers.Main) {
                     if (appRepo.accountExists(no)) {
                         if (account != null) {
                             addAccount(appRepo.findUid(no), name, no, type)
@@ -101,7 +101,7 @@ class AddDialog(private val account: AppAccount? = null) : DialogFragment() {
                                 .setTitle("Account No. already exists.")
                                 .setMessage("Do you want to replace it?")
                                 .setPositiveButton(android.R.string.ok) { _, _ ->
-                                    MainScope().launch {
+                                    appScope.launch {
                                         addAccount(appRepo.findUid(no), name, no, type)
                                     }
                                     sendThenDismiss()

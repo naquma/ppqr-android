@@ -39,13 +39,13 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.mikore.ppqr.AppConst
+import com.mikore.ppqr.App.Companion.appScope
+import com.mikore.ppqr.Contracts
 import com.mikore.ppqr.R
 import com.mikore.ppqr.adapter.AccountAdapter
 import com.mikore.ppqr.database.AppRepo
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -55,38 +55,6 @@ class AccountFragment : Fragment() {
     companion object {
         const val REFRESH_FILTER = "com.mikore.ppqr.ACCOUNT_REFRESH"
         const val DELETE_ACCOUNT = "com.mikore.ppqr.DELETE_ACCOUNT"
-    }
-
-    private val refreshBroadcast = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, it: Intent?) {
-            update()
-        }
-    }
-
-    private val deleteBroadcast = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val uid = intent?.getStringExtra(AppConst.ARGS_ACCOUNT_ID_KEY)
-            if (!uid.isNullOrEmpty()) {
-                MainScope().launch {
-                    withContext(Dispatchers.IO) {
-                        appRepo.getAccount(uid)
-                    }.run {
-                        appRepo.deleteAccount(this)
-                        update()
-                        Intent().also {
-                            it.action = HistoryFragment.REFRESH_FILTER
-                            requireContext().sendBroadcast(it)
-                        }
-                        Toast.makeText(
-                            requireContext(),
-                            "Successfully.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                }
-            }
-        }
     }
 
     private lateinit var accountRecycler: RecyclerView
@@ -178,7 +146,7 @@ class AccountFragment : Fragment() {
 
     private fun update() {
         accountSwipe.isRefreshing = true
-        MainScope().launch {
+        appScope.launch(Dispatchers.Main) {
             val data = withContext(Dispatchers.IO) {
                 appRepo.getAccounts()
             }
@@ -200,4 +168,36 @@ class AccountFragment : Fragment() {
 
     private fun FloatingActionButton.setTint(color: Int) = DrawableCompat.setTint(drawable, color)
 
+
+    private val refreshBroadcast = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, it: Intent?) {
+            update()
+        }
+    }
+
+    private val deleteBroadcast = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val uid = intent?.getStringExtra(Contracts.KEY_ACCOUNT_ID)
+            if (!uid.isNullOrEmpty()) {
+                appScope.launch(Dispatchers.Main) {
+                    withContext(Dispatchers.IO) {
+                        appRepo.getAccount(uid)
+                    }.run {
+                        appRepo.deleteAccount(this)
+                        update()
+                        Intent().also {
+                            it.action = HistoryFragment.REFRESH_FILTER
+                            requireContext().sendBroadcast(it)
+                        }
+                        Toast.makeText(
+                            requireContext(),
+                            "Successfully.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                }
+            }
+        }
+    }
 }

@@ -25,7 +25,7 @@ interface AppAccountDao {
 
     @Transaction
     @Query("SELECT * FROM account WHERE uid = :uid")
-    fun getAccount(uid: String): AppAccount
+    fun getAccount(uid: String?): AppAccount
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)

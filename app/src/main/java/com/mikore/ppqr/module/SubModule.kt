@@ -15,8 +15,7 @@
  */
 package com.mikore.ppqr.module
 
-import androidx.fragment.app.FragmentActivity
-import com.mikore.ppqr.activity.MainActivity
+import androidx.fragment.app.FragmentManager
 import com.mikore.ppqr.activity.ResultActivity
 import com.mikore.ppqr.adapter.AccountAdapter
 import com.mikore.ppqr.adapter.HistoryAdapter
@@ -28,46 +27,43 @@ import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class ActivityModule {
-    @ActivityScope
-    @ContributesAndroidInjector(modules = [MainActivityModule::class, MainActivityFragmentModule::class])
-    abstract fun contributeMainActivity(): MainActivity
-
+abstract class SubModule {
     @ActivityScope
     @ContributesAndroidInjector
     abstract fun contributeResultActivity(): ResultActivity
-}
 
-@Module
-class MainActivityModule {
-    @Provides
-    @ActivityScope
-    fun provideFragmentActivity(mainActivity: MainActivity): FragmentActivity = mainActivity
-}
-
-@Module
-abstract class MainActivityFragmentModule {
-    @FragmentScope
+    @AccountScope
     @ContributesAndroidInjector(modules = [AccountFragmentModule::class])
-    abstract fun provideAccountFragment(): AccountFragment
+    abstract fun contributeAccountFragment(): AccountFragment
 
-    @FragmentScope
+    @HistoryScope
     @ContributesAndroidInjector(modules = [HistoryFragmentModule::class])
-    abstract fun provideHistoryFragment(): HistoryFragment
+    abstract fun contributeHistoryFragment(): HistoryFragment
 }
 
 @Module
 class AccountFragmentModule {
     @Provides
-    @FragmentScope
-    fun provideAccountAdapter(fragmentActivity: FragmentActivity) =
-        AccountAdapter(fragmentActivity, fragmentActivity.supportFragmentManager)
+    @AccountScope
+    fun provideFragmentManager(fragment: AccountFragment): FragmentManager =
+        fragment.requireActivity().supportFragmentManager
+
+    @Provides
+    @AccountScope
+    fun provideAccountAdapter(fragmentManager: FragmentManager) =
+        AccountAdapter(fragmentManager)
 }
 
 @Module
 class HistoryFragmentModule {
+
     @Provides
-    @FragmentScope
-    fun provideHistoryAdapter(fragmentActivity: FragmentActivity, appRepo: AppRepo) =
-        HistoryAdapter(fragmentActivity.supportFragmentManager, appRepo)
+    @HistoryScope
+    fun provideFragmentManager(fragment: HistoryFragment): FragmentManager =
+        fragment.requireActivity().supportFragmentManager
+
+    @Provides
+    @HistoryScope
+    fun provideHistoryAdapter(fragmentManager: FragmentManager, appRepo: AppRepo) =
+        HistoryAdapter(fragmentManager, appRepo)
 }

@@ -16,154 +16,146 @@ limitations under the License. -->
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="3dp"
+    android:background="@drawable/bg_round"
+    android:clickable="true"
+    android:elevation="3dp"
+    android:focusable="true"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <FrameLayout
-        android:id="@+id/account_frame_bg"
+    <LinearLayout
+        android:id="@+id/account_section_1"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/bg_round"
-        android:clickable="true"
-        android:focusable="true"
-        app:elevation="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/account_name"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/account_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#000"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/account_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_text" />
+
+        <TextView
+            android:id="@+id/account_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/default_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/account_section_2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="11dp"
-        android:text="Account Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#000"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/account_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="012345689"
-        app:layout_constraintStart_toStartOf="@+id/account_name"
-        app:layout_constraintTop_toBottomOf="@+id/account_name" />
-
-    <TextView
-        android:id="@+id/account_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="E-WALLET"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/account_no"
-        app:layout_constraintTop_toBottomOf="@+id/account_no" />
-
-    <ImageView
-        android:id="@+id/account_cover"
-        android:layout_width="58dp"
-        android:layout_height="58dp"
-        android:layout_marginEnd="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/account_type"
+        android:orientation="vertical"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/account_name" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/account_section_1">
 
-    <CheckBox
-        android:id="@+id/custom_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:minWidth="260dp"
-        android:text="Use custom amount."
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/account_name"
-        app:layout_constraintTop_toBottomOf="@id/account_type" />
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/custom_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/custom_amount" />
 
-    <EditText
-        android:id="@+id/custom_amount_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorAccent"
-        android:enabled="false"
-        android:hint="Ex: 900 (Optional)"
-        android:inputType="numberDecimal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/account_cover"
-        app:layout_constraintStart_toStartOf="@+id/account_name"
-        app:layout_constraintTop_toBottomOf="@id/custom_amount" />
+        <EditText
+            android:id="@+id/custom_amount_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:backgroundTint="@color/colorAccent"
+            android:hint="@string/amount_hint"
+            android:inputType="numberDecimal"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/custom_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Description"
-        android:textColor="#000"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/account_name"
-        app:layout_constraintTop_toBottomOf="@id/custom_amount_field" />
+        <TextView
+            android:id="@+id/custom_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/description"
+            android:textColor="#000" />
 
-    <EditText
-        android:id="@+id/custom_desc_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorAccent"
-        android:gravity="top|left"
-        android:hint="Description (Optional)"
-        android:inputType="text"
-        android:minHeight="112dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/account_cover"
-        app:layout_constraintStart_toStartOf="@+id/account_name"
-        app:layout_constraintTop_toBottomOf="@id/custom_desc" />
+        <EditText
+            android:id="@+id/custom_desc_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:backgroundTint="@color/colorAccent"
+            android:gravity="top|left"
+            android:hint="@string/description_hint"
+            android:inputType="text"
+            android:minHeight="112dp" />
 
-    <Button
-        android:id="@+id/generate_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/bg_round"
-        android:text="Generate"
-        android:textColor="#fff"
-        android:visibility="gone"
-        app:backgroundTint="@color/colorAccent"
-        app:elevation="3dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/account_cover"
-        app:layout_constraintTop_toBottomOf="@id/custom_desc_field" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/delete_button"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_margin="3dp"
-        android:background="@drawable/circle_btn"
-        android:tint="#ff0000"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/generate_button"
-        app:layout_constraintEnd_toStartOf="@id/generate_button"
-        app:layout_constraintTop_toTopOf="@id/generate_button"
-        app:srcCompat="@drawable/ic_recycle_bin" />
+            <Button
+                android:id="@+id/generate_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_round"
+                android:text="@string/generate"
+                android:textColor="#fff"
+                app:backgroundTint="@color/colorAccent"
+                app:elevation="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/edit_button"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_margin="3dp"
-        android:background="@drawable/circle_btn"
-        android:tint="#689f38"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/generate_button"
-        app:layout_constraintEnd_toStartOf="@id/delete_button"
-        app:layout_constraintTop_toTopOf="@id/generate_button"
-        app:srcCompat="@drawable/ic_pencil" />
+            <ImageButton
+                android:id="@+id/delete_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_margin="3dp"
+                android:background="@drawable/circle_btn"
+                android:contentDescription="@string/default_text"
+                android:tint="#ff0000"
+                app:layout_constraintBottom_toBottomOf="@id/generate_button"
+                app:layout_constraintEnd_toStartOf="@id/generate_button"
+                app:layout_constraintTop_toTopOf="@id/generate_button"
+                app:srcCompat="@drawable/ic_recycle_bin" />
 
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_margin="3dp"
+                android:background="@drawable/circle_btn"
+                android:contentDescription="@string/default_text"
+                android:tint="#689f38"
+                app:layout_constraintBottom_toBottomOf="@id/generate_button"
+                app:layout_constraintEnd_toStartOf="@id/delete_button"
+                app:layout_constraintTop_toTopOf="@id/generate_button"
+                app:srcCompat="@drawable/ic_pencil" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

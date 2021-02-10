@@ -27,12 +27,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.mikore.ppqr.App.Companion.appScope
 import com.mikore.ppqr.R
 import com.mikore.ppqr.adapter.HistoryAdapter
 import com.mikore.ppqr.database.AppRepo
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -44,12 +44,6 @@ class HistoryFragment : Fragment() {
     }
 
     private lateinit var historySwipe: SwipeRefreshLayout
-
-    private val refreshBroadcast = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, it: Intent?) {
-            update()
-        }
-    }
 
     @Inject
     lateinit var adapter: HistoryAdapter
@@ -96,12 +90,18 @@ class HistoryFragment : Fragment() {
 
     private fun update() {
         historySwipe.isRefreshing = true
-        MainScope().launch {
+        appScope.launch(Dispatchers.Main) {
             val data = withContext(Dispatchers.IO) {
                 appRepo.getHistories()
             }
             adapter.updateData(data)
             historySwipe.isRefreshing = false
+        }
+    }
+
+    private val refreshBroadcast = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, it: Intent?) {
+            update()
         }
     }
 }

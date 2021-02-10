@@ -26,20 +26,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.mikore.ppqr.R
 import com.mikore.ppqr.adapter.PagerAdapter
 import com.mikore.ppqr.fragment.AppDialog
-import dagger.android.AndroidInjection
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
 
-
-class MainActivity : AppCompatActivity(), HasAndroidInjector {
-
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -66,7 +56,5 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
 }
