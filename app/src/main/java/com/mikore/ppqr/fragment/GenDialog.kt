@@ -83,7 +83,7 @@ class GenDialog : DialogFragment() {
                 ).show()
             } else {
                 QRPopup(
-                    AppHistory("", "", ds.ifEmpty { "Quick Generate" }, am.ifEmpty { null }),
+                    AppHistory( "", ds.ifEmpty { "Quick Generate" }, am.ifEmpty { null }),
                     AppAccount("", null, no, AccountType.fromLength(no.length))
                 ).show(requireActivity().supportFragmentManager, "quick_gen")
             }
