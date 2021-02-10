@@ -25,8 +25,6 @@ import kotlin.math.roundToInt
 
 class Utils {
     companion object {
-        fun dpToPx(dp: Int, resources: Resources) =
-            (dp * (resources.displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 
         @SuppressLint("NewApi")
         @Suppress("DEPRECATION")
