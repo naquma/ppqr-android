@@ -91,7 +91,7 @@ class AccountAdapter @Inject constructor(
                     ConstraintSet.BOTTOM,
                     ConstraintSet.PARENT_ID,
                     ConstraintSet.BOTTOM,
-                    Utils.dpToPx(10, context.resources)
+                    30
                 )
             } else {
                 c.setVisibility(holder.customAmount.id, View.VISIBLE)
