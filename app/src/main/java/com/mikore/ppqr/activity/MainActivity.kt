@@ -19,6 +19,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mikore.ppqr.R
 import com.mikore.ppqr.adapter.PagerAdapter
@@ -27,7 +30,6 @@ import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
-import kotlinx.android.synthetic.main.main_layout.*
 import javax.inject.Inject
 
 
@@ -40,10 +42,13 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        pager_main.adapter = PagerAdapter(this)
-        TabLayoutMediator(tab_layout, pager_main) { tab, position ->
+        val pager = findViewById<ViewPager2>(R.id.pager_main)
+        val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
+        pager.adapter = PagerAdapter(this)
+        TabLayoutMediator(tabLayout, pager) { tab, position ->
             tab.text = if (position == 0) "Account" else "History"
         }.attach()
 
