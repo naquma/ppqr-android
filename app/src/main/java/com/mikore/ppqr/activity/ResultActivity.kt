@@ -121,7 +121,7 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
             qrView.setImageBitmap(qrBitmap)
             if (saveHistory) {
                 appRepo.saveHistory(
-                    AppHistory(null, account.uid, desc, amount)
+                    AppHistory(account.uid, desc, amount)
                 )
                 Intent().also {
                     it.action = HistoryFragment.REFRESH_FILTER
