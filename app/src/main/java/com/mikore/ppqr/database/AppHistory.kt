@@ -34,7 +34,7 @@ import java.util.*
 )
 data class AppHistory(
     @PrimaryKey
-    var uid: String = UUID.randomUUID().toString(),
+    var uid: String? = UUID.randomUUID().toString(),
     @ColumnInfo(name = "account_id", index = true)
     var accountId: String,
     @ColumnInfo(name = "description")

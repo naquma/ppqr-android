@@ -36,7 +36,6 @@ import com.mikore.ppqr.activity.ResultActivity
 import com.mikore.ppqr.database.AppAccount
 import com.mikore.ppqr.fragment.AccountFragment
 import com.mikore.ppqr.fragment.AddDialog
-import com.mikore.ppqr.utility.Utils
 import javax.inject.Inject
 
 class AccountAdapter @Inject constructor(
