@@ -231,6 +231,7 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
                 color = Color.BLACK
                 style = Paint.Style.FILL
                 textSize = 42f
+                isAntiAlias = true
                 textAlign = Paint.Align.CENTER
             }
             drawText(
