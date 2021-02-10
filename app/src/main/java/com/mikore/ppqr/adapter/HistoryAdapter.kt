@@ -43,7 +43,7 @@ class HistoryAdapter @Inject constructor(
         private val historyAmount: TextView = item.findViewById(R.id.history_amount)
         private val historyBin: ImageButton = item.findViewById(R.id.history_bin)
 
-        fun bind(title: String, desc: String, date: String, amount: String?) {
+        fun bind(title: String?, desc: String, date: String, amount: String?) {
             historyTitle.text = title
             historyDesc.text = desc
             historyDate.text = date
@@ -94,27 +94,26 @@ class HistoryAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder, position: Int) {
         val history = histories[position]
-        var title: String = ""
         MainScope().launch {
             val account = withContext(Dispatchers.IO) {
                 appRepo.getAccount(history.accountId)
             }
-            title += account.no
-            account.name?.let {
-                title += " ($it)"
-            }
             holder.bindFrameClick(history, account, fragmentManager)
+            var title: String = account.no
+            if (!account.name.isNullOrEmpty()) {
+                title += " ({$account.name})"
+            }
+            val desc = history.description ?: "No description"
+            val date = dateFormat.format(history.time)
+            var amount: String? = null
+            val haveAmount = !history.amount.isNullOrEmpty()
+            if (haveAmount) {
+                amount = "${history.amount} Baht"
+            }
+            holder.bind(title, desc, date, amount)
+            holder.showAmount(haveAmount)
+            holder.bindRemoveClick(history, appRepo)
         }
-        val desc = history.description ?: "No description"
-        val date = dateFormat.format(history.time)
-        var amount: String? = null
-        val haveAmount = !history.amount.isNullOrEmpty()
-        if (haveAmount) {
-            amount = "${history.amount} Baht"
-        }
-        holder.bind(title, desc, date, amount)
-        holder.showAmount(haveAmount)
-        holder.bindRemoveClick(history, appRepo)
     }
 
     fun updateData(data: List<AppHistory>) {
