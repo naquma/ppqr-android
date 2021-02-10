@@ -15,7 +15,6 @@
  */
 package com.mikore.ppqr.adapter
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -74,19 +73,19 @@ class HistoryAdapter @Inject constructor(
         fun bindRemoveClick(history: AppHistory, appRepo: AppRepo) {
             historyBin.setOnClickListener {
                 AlertDialog.Builder(item.context)
-                .setTitle("Delete")
-                .setMessage("Confirm to delete?")
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    MainScope().launch {
-                        appRepo.deleteHistory(history)
+                    .setTitle("Delete")
+                    .setMessage("Confirm to delete?")
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        MainScope().launch {
+                            appRepo.deleteHistory(history)
+                        }
+                        Intent().also {
+                            it.action = HistoryFragment.REFRESH_FILTER
+                            item.context.sendBroadcast(it)
+                        }
                     }
-                    Intent().also {
-                        it.action = HistoryFragment.REFRESH_FILTER
-                        item.context.sendBroadcast(it)
-                    }
-                }
-                .setNegativeButton(android.R.string.cancel, null)
-                .show()
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
             }
         }
 

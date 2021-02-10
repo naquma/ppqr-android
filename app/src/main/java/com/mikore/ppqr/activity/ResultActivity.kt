@@ -19,25 +19,26 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Paint
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.applyCanvas
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.card.MaterialCardView
 import com.mikore.ppqr.AppConst
 import com.mikore.ppqr.BuildConfig
 import com.mikore.ppqr.R
@@ -45,9 +46,7 @@ import com.mikore.ppqr.database.AppHistory
 import com.mikore.ppqr.database.AppRepo
 import com.mikore.ppqr.fragment.HistoryFragment
 import com.mikore.ppqr.utility.PromptPayUtil
-import com.mikore.ppqr.utility.Utils
 import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.result_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -56,7 +55,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -65,9 +63,13 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
     private val amountView by lazy { findViewById<TextView>(R.id.textView8) }
     private val descView by lazy { findViewById<TextView>(R.id.textView9) }
     private val qrView by lazy { findViewById<ImageView>(R.id.imageView2) }
-    private val qrRoot by lazy { findViewById<MaterialCardView>(R.id.qr_root) }
     private val bnv by lazy { findViewById<BottomNavigationView>(R.id.rs_bnv) }
     private val promptPay = PromptPayUtil()
+
+    private lateinit var qrBitmap: Bitmap
+    private lateinit var titleText: String
+    private lateinit var descText: String
+    private lateinit var amountText: String
 
     @Inject
     lateinit var appRepo: AppRepo
@@ -77,7 +79,8 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.result_layout)
-        setSupportActionBar(result_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.result_toolbar)
+        setSupportActionBar(toolbar)
 
         val saveHistory = intent.getBooleanExtra(AppConst.ARGS_SAVE_HISTORY_KEY, false)
         val uid = intent.getStringExtra(AppConst.ARGS_ACCOUNT_ID_KEY)
@@ -90,39 +93,35 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         }
 
         val params = qrView.layoutParams as ConstraintLayout.LayoutParams
-        params.width = getSize()
-        params.height = getSize()
+        params.width = 300
+        params.height = 300
         qrView.layoutParams = params
 
-
-        val amountText = "Amount: " + if (amount == null) {
+        amountText = "Amount: " + if (amount == null) {
             "Not specified"
         } else {
             "$amount Baht."
         }
         amountView.text = amountText
-        val descText = "Note: " + (desc ?: "Not specified")
+        descText = "Note: " + (desc ?: "Not specified")
         descView.text = descText
 
         MainScope().launch {
             val account = withContext(Dispatchers.IO) {
                 appRepo.getAccount(uid)
             }
-            nameView.text = if (account.name.isNullOrEmpty()) {
-                account.no
-            } else {
-                "${account.name} (${account.no})"
+            titleText = account.no
+            if (!account.name.isNullOrEmpty()) {
+                titleText += " (${account.name})"
             }
+            nameView.text = titleText
             val data = promptPay.generateQRData(account.no, amount)
-            val qrg = QRGEncoder(data, null, QRGContents.Type.TEXT, getSize())
-            qrView.setImageBitmap(qrg.bitmap)
+            val qrg = QRGEncoder(data, null, QRGContents.Type.TEXT, 300)
+            qrBitmap = qrg.bitmap
+            qrView.setImageBitmap(qrBitmap)
             if (saveHistory) {
                 appRepo.saveHistory(
-                    AppHistory(
-                        accountId = account.uid,
-                        description = desc,
-                        amount = amount
-                    )
+                    AppHistory(account.uid, desc, amount)
                 )
                 Intent().also {
                     it.action = HistoryFragment.REFRESH_FILTER
@@ -138,13 +137,13 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         when (item.itemId) {
             R.id.rs_close -> finish()
             R.id.rs_save -> {
-                storeImage()
+                storeImage(false)
                 showToast("Saved successfully.", Toast.LENGTH_SHORT)
             }
             R.id.rs_share -> {
                 val it = Intent(Intent.ACTION_SEND).apply {
                     type = "image/jpeg"
-                    putExtra(Intent.EXTRA_STREAM, storeImage())
+                    putExtra(Intent.EXTRA_STREAM, storeImage(true))
                 }
                 startActivity(Intent.createChooser(it, "Share Image"))
             }
@@ -178,10 +177,14 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         return super.onOptionsItemSelected(item)
     }
 
-    private fun storeImage(): Uri? {
+    private fun storeImage(isShare: Boolean): Uri? {
         try {
-            val image = exportToBitmap(qrRoot)
-            val dist = File(Environment.DIRECTORY_PICTURES, getString(R.string.app_name))
+            val image = exportToBitmap()
+            val dist = if (isShare) {
+                File(Environment.DIRECTORY_PICTURES, getString(R.string.app_name))
+            } else {
+                getExternalFilesDir("images_share")
+            }
             val date = System.currentTimeMillis()
             val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.ENGLISH)
                 .format(date) + getString(R.string.app_name).replace(" ", "-")
@@ -223,41 +226,23 @@ class ResultActivity : AppCompatActivity(), BottomNavigationView.OnNavigationIte
         Toast.makeText(baseContext, message, length).show()
     }
 
-    private fun exportToBitmap(v: View): Bitmap {
-        val rootView = window.decorView.rootView
-        val bmp = Bitmap.createBitmap(
-            Utils.screenWidth(windowManager),
-            Utils.screenHeight(windowManager),
-            Bitmap.Config.ARGB_8888
-        )
-            .applyCanvas {
-                rootView.layout(0, 0, width, height)
-                translate(-rootView.scrollX.toFloat(), -rootView.scrollY.toFloat())
-                rootView.draw(this)
+    private fun exportToBitmap(): Bitmap {
+        val baseBitmap = BitmapFactory.decodeResource(resources, R.drawable.optimize)
+        baseBitmap.applyCanvas {
+            drawBitmap(qrBitmap, 50f, 50f, null)
+            val paint = Paint().apply {
+                color = Color.BLACK
+                style = Paint.Style.FILL
+                textSize = 18f
+                textAlign = Paint.Align.CENTER
             }
-        val location = IntArray(2)
-        v.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        v.getLocationOnScreen(location)
-        return Bitmap.createBitmap(
-            bmp,
-            location[0] + toPx(6),
-            location[1] + toPx(6),
-            bmp.width - (location[0] * 2) - toPx(12),
-            v.measuredHeight - toPx(12)
-        )
-    }
-
-    private fun toPx(dp: Int): Int =
-        (dp * (resources.displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
-
-
-    private fun getSize(): Int {
-        val width = Utils.screenWidth(windowManager)
-        val height = Utils.screenHeight(windowManager)
-        return if (width < height) {
-            (width * 0.7).roundToInt()
-        } else {
-            (height * 0.7).roundToInt()
+            drawText(titleText, baseBitmap.width / 2f, 360f, paint)
+            paint.textSize = 14f
+            paint.color = 0x323232
+            drawText(descText, baseBitmap.width / 2f, 375f, paint)
+            drawText(amountText, baseBitmap.width / 2f, 390f, paint)
         }
+        return baseBitmap
     }
+
 }

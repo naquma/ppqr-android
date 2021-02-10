@@ -33,8 +33,6 @@ import java.util.*
     )]
 )
 data class AppHistory(
-    @PrimaryKey
-    var uid: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "account_id", index = true)
     var accountId: String,
     @ColumnInfo(name = "description")
@@ -42,5 +40,7 @@ data class AppHistory(
     @ColumnInfo(name = "amount")
     var amount: String?,
     @ColumnInfo(name = "update_at")
-    var time: Long = System.currentTimeMillis()
+    var time: Long = System.currentTimeMillis(),
+    @PrimaryKey
+    var uid: String = UUID.randomUUID().toString()
 )

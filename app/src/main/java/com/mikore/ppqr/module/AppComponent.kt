@@ -16,7 +16,6 @@
 package com.mikore.ppqr.module
 
 import android.app.Application
-import android.content.Context
 import com.mikore.ppqr.AppApplication
 import com.mikore.ppqr.database.AppRepo
 import dagger.*

@@ -21,7 +21,6 @@ import android.os.Build
 import android.util.DisplayMetrics
 import android.view.WindowInsets
 import android.view.WindowManager
-import kotlin.math.roundToInt
 
 class Utils {
     companion object {
