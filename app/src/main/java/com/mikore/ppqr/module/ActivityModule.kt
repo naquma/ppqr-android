@@ -54,5 +54,5 @@ class HistoryFragmentModule {
     @Provides
     @FragmentScope
     fun provideHistoryAdapter(fragmentActivity: FragmentActivity, appRepo: AppRepo) =
-        HistoryAdapter(fragmentActivity, fragmentActivity.supportFragmentManager, appRepo)
+        HistoryAdapter(fragmentActivity.supportFragmentManager, appRepo)
 }
