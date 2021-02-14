@@ -19,7 +19,7 @@ jobs:
         java-version: 1.8
     - name: set up Android SDK
       run: |
-       wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+       wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
        unzip -d android-sdk-linux android-sdk.zip
        export ANDROID_HOME=$PWD/android-sdk-linux
        echo y | android-sdk-linux/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-30" >/dev/null
