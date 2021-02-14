@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -22,11 +22,11 @@ jobs:
        wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
        unzip -d android-sdk-linux android-sdk.zip
        export ANDROID_HOME=$PWD/android-sdk-linux
-       echo y | android-sdk-linux/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-30" >/dev/null
-       echo y | android-sdk-linux/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" >/dev/null
-       echo y | android-sdk-linux/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;30.0.2" >/dev/null
+       echo y | android-sdk-linux/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-30" >/dev/null
+       echo y | android-sdk-linux/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" >/dev/null
+       echo y | android-sdk-linux/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;30.0.2" >/dev/null
        export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
-       yes | android-sdk-linux/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses
+       yes | android-sdk-linux/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Lint debug
