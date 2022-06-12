@@ -15,12 +15,19 @@
  */
 package com.mikore.ppqr.database
 
-import androidx.room.TypeConverter
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-class Converters {
-    @TypeConverter
-    fun StringToAccountType(type: String): AccountType = AccountType.asType(type)
+@Entity(tableName = "accounts")
+data class Account(
 
-    @TypeConverter
-    fun AccountTypeToString(type: AccountType): String = type.asText()
-}
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0,
+
+    @ColumnInfo(name = "name")
+    var name: String,
+
+    @ColumnInfo(name = "number")
+    var number: String
+)

@@ -18,8 +18,12 @@ limitations under the License. -->
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/abount_menu"
-        android:icon="@drawable/ic_help"
-        android:title="About"
+        android:id="@+id/history_menu"
+        android:title="@string/history"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/about_menu"
+        android:title="@string/about"
         app:showAsAction="ifRoom" />
 </menu>

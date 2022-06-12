@@ -19,13 +19,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 
-@Database(entities = [AppAccount::class, AppHistory::class], version = 1, exportSchema = false)
-@TypeConverters(Converters::class)
+@Database(entities = [Account::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun accountDao(): AppAccountDao
-    abstract fun historyDao(): AppHistoryDao
+
+    abstract fun accountDao(): AccountDao
 
     companion object {
         @Volatile
@@ -39,6 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "app"
                 ).build()
                 INSTANCE = instance
+
                 instance
             }
         }

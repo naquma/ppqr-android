@@ -16,22 +16,20 @@
 package com.mikore.ppqr.database
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface AppAccountDao {
-    @Transaction
-    @Query("SELECT * FROM account")
-    fun getAccounts(): List<AppAccount>
+interface AccountDao {
 
-    @Transaction
-    @Query("SELECT * FROM account WHERE uid = :uid")
-    fun getAccount(uid: String?): AppAccount
+    @Query("SELECT * FROM accounts")
+    fun accounts(): Flow<List<Account>>
 
-    @Transaction
+    @Query("SELECT * FROM accounts WHERE id = :id")
+    fun account(id: Int): Flow<Account>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun add(account: AppAccount)
+    suspend fun insert(account: Account)
 
-    @Transaction
-    @Query("DELETE FROM account WHERE uid = :uid")
-    fun delete(uid: String)
+    @Delete
+    suspend fun delete(account: Account)
 }

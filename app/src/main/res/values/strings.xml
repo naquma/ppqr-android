@@ -16,13 +16,6 @@ limitations under the License. -->
 
 <resources>
     <string name="app_name">PromptPay QR</string>
-    <string name="app_info">This application created for generate a promptpay qr code for everyone used for pay something or any transaction with support promptpay qr</string>
-    <string name="main_ad_view">ca-app-pub-8856932379572632/8208087539</string>
-    <string name="result_popup_unit">ca-app-pub-8856932379572632/3346960320</string>
-    <string name="default_text">Lorem Ipsum</string>
-    <string name="custom_amount">Use custom amount.</string>
-    <string name="amount_hint">Ex: 900 (Optional)</string>
-    <string name="description">Description</string>
-    <string name="description_hint">Description (Optional)</string>
-    <string name="generate">Generate</string>
+    <string name="about">About</string>
+    <string name="history">History</string>
 </resources>
